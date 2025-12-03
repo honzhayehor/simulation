@@ -8,5 +8,5 @@ public abstract class Entity {
 
 
     public abstract void setCoordinates();
-    public boolean isPassable() {return this.walkable;}
+    public boolean blocksMovement() {return this.walkable;}
 }

@@ -17,15 +17,15 @@ public class Coordinates {
         this(x, y, null);
     }
 
-    public int getX() {return x;}
-    public int getY() {return y;}
+    public int x() {return x;}
+    public int y() {return y;}
 
     public boolean isEmpty() { return (entity == null) ? true: false;}
 
     public Entity getEntity() {return entity;}
 
     public void setEntity(Entity newEntity) {
-        if (this.entity.isPassable()) {
+        if (this.entity.blocksMovement()) {
             backedEntity = entity;
         }
         entity = newEntity;
