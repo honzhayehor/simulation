@@ -2,6 +2,7 @@ package logic;
 
 import entities.Entity;
 import entities.Grass;
+import entities.Herbivore;
 
 import java.util.Objects;
 import java.util.function.Predicate;

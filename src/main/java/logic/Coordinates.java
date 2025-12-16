@@ -2,18 +2,20 @@ package logic;
 
 import entities.Entity;
 
+import java.util.Objects;
+
 public class Coordinates {
     private final int x;
     private final int y;
     private Entity entity;
     private Entity backedEntity;
 
-    Coordinates(int x, int y, Entity entity) {
+    public Coordinates(int x, int y, Entity entity) {
         this.x = x;
         this.y = y;
         this.entity = entity;
     }
-    Coordinates(int x, int y) {
+    public Coordinates(int x, int y) {
         this(x, y, null);
     }
 
@@ -25,7 +27,7 @@ public class Coordinates {
     public Entity getEntity() {return entity;}
 
     public void setEntity(Entity newEntity) {
-        if (this.entity.blocksMovement()) {
+        if (this.entity.isWalkable()) {
             backedEntity = entity;
         }
         entity = newEntity;
@@ -38,4 +40,14 @@ public class Coordinates {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Coordinates that)) return false;
+        return x == that.x && y == that.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
 }
