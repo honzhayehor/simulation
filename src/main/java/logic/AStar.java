@@ -130,7 +130,7 @@ public class AStar {
      */
     private boolean isWalkable(Coordinates c) {
         Entity e = worldMap.get(c);
-        return e == null || !e.blocksMovement();
+        return e == null || !e.isWalkable();
     }
 
     /**

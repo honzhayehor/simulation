@@ -6,14 +6,14 @@ public abstract class Entity {
     private final boolean walkable;
     private Coordinates coordinates;
 
-    public Entity(boolean walkable, Coordinates coordinates) {
-        this.walkable = walkable;
+    protected Entity(Coordinates coordinates, boolean walkable) {
         this.coordinates = coordinates;
+        this.walkable = walkable;
     }
 
     public abstract String getAvatar();
 
-    public boolean blocksMovement() {
+    public boolean isWalkable() {
         return !walkable;
     }
 
