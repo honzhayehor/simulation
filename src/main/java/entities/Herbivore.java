@@ -1,11 +1,12 @@
 package entities;
 
-import logic.Coordinates;
+import logic.Cell;
+import logic.PathfindingService;
 import logic.Species;
 
 public class Herbivore extends Creature {
-    protected Herbivore(Coordinates coordinates, boolean walkable, Species species) {
-        super(coordinates, walkable, species);
+    protected Herbivore(Cell cell, boolean walkable, Species species, PathfindingService pathfindingService) {
+        super(cell, walkable, species, pathfindingService);
     }
 
     @Override

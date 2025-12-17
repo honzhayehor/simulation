@@ -1,13 +1,13 @@
 package entities;
 
 import attributes.Edible;
-import logic.Coordinates;
+import logic.Cell;
 import logic.Energy;
 
 public class Grass extends Entity implements Edible {
 
-    public Grass(Coordinates coordinates) {
-        super(coordinates, true);
+    public Grass(Cell cell) {
+        super(cell, true);
     }
 
     @Override

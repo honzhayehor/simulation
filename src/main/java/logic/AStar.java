@@ -1,7 +1,6 @@
 package logic;
 
 import entities.Entity;
-import logic.Coordinates;
 
 import java.util.*;
 
@@ -16,10 +15,10 @@ public final class AStar {
         return INSTANCE;
     }
 
-    public List<Coordinates> findPath(
-            Coordinates start,
-            Coordinates target,
-            Map<Coordinates, Entity> worldMap,
+    public List<Cell> findPath(
+            Cell start,
+            Cell target,
+            Map<Cell, Entity> worldMap,
             int width,
             int height
     ) {
@@ -36,8 +35,8 @@ public final class AStar {
         }
 
         PriorityQueue<Node> openSet = new PriorityQueue<>(Comparator.comparingInt(Node::getF));
-        Map<Coordinates, Node> allNodes = new HashMap<>();
-        Set<Coordinates> closedSet = new HashSet<>();
+        Map<Cell, Node> allNodes = new HashMap<>();
+        Set<Cell> closedSet = new HashSet<>();
 
         Node startNode = new Node(start, 0, heuristic(start, target), null);
         openSet.add(startNode);
@@ -56,7 +55,7 @@ public final class AStar {
 
             closedSet.add(current.position);
 
-            for (Coordinates neighbor : getNeighbors(current.position)) {
+            for (Cell neighbor : getNeighbors(current.position)) {
                 if (!isInside(neighbor, width, height)) continue;
                 if (!isWalkable(neighbor, worldMap) && !neighbor.equals(target)) continue;
                 if (closedSet.contains(neighbor)) continue;
@@ -81,31 +80,31 @@ public final class AStar {
 
     // ===== helpers =====
 
-    private boolean isInside(Coordinates c, int width, int height) {
+    private boolean isInside(Cell c, int width, int height) {
         return c.x() >= 1 && c.x() <= width &&
                 c.y() >= 1 && c.y() <= height;
     }
 
-    private boolean isWalkable(Coordinates c, Map<Coordinates, Entity> worldMap) {
+    private boolean isWalkable(Cell c, Map<Cell, Entity> worldMap) {
         Entity e = worldMap.get(c);
         return e == null || e.isWalkable();
     }
 
-    private int heuristic(Coordinates a, Coordinates b) {
+    private int heuristic(Cell a, Cell b) {
         return Math.abs(a.x() - b.x()) + Math.abs(a.y() - b.y());
     }
 
-    private List<Coordinates> getNeighbors(Coordinates c) {
+    private List<Cell> getNeighbors(Cell c) {
         return List.of(
-                new Coordinates(c.x() + 1, c.y()),
-                new Coordinates(c.x() - 1, c.y()),
-                new Coordinates(c.x(), c.y() + 1),
-                new Coordinates(c.x(), c.y() - 1)
+                new Cell(c.x() + 1, c.y()),
+                new Cell(c.x() - 1, c.y()),
+                new Cell(c.x(), c.y() + 1),
+                new Cell(c.x(), c.y() - 1)
         );
     }
 
-    private List<Coordinates> reconstructPath(Node node) {
-        List<Coordinates> path = new ArrayList<>();
+    private List<Cell> reconstructPath(Node node) {
+        List<Cell> path = new ArrayList<>();
         for (Node n = node; n != null; n = n.parent) {
             path.add(n.position);
         }
@@ -114,12 +113,12 @@ public final class AStar {
     }
 
     private static class Node {
-        Coordinates position;
+        Cell position;
         int g;
         int h;
         Node parent;
 
-        Node(Coordinates position, int g, int h, Node parent) {
+        Node(Cell position, int g, int h, Node parent) {
             this.position = position;
             this.g = g;
             this.h = h;

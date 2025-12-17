@@ -1,13 +1,13 @@
 package entities;
 
-import logic.Coordinates;
+import logic.Cell;
 
 public abstract class Entity {
     private final boolean walkable;
-    private Coordinates coordinates;
+    private Cell cell;
 
-    protected Entity(Coordinates coordinates, boolean walkable) {
-        this.coordinates = coordinates;
+    protected Entity(Cell cell, boolean walkable) {
+        this.cell = cell;
         this.walkable = walkable;
     }
 
@@ -17,11 +17,11 @@ public abstract class Entity {
         return !walkable;
     }
 
-    public Coordinates getCoordinates() {
-        return coordinates;
+    public Cell getCell() {
+        return cell;
     }
 
-    public void setCoordinates(Coordinates coordinates) {
-        this.coordinates = coordinates;
+    public void setCoordinates(Cell cell) {
+        this.cell = cell;
     }
 }

@@ -3,20 +3,36 @@ package entities;
 import logic.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
-public abstract class Creature extends Entity{
+public abstract class Creature extends Entity {
     protected int hp;
-    protected List<Coordinates> path;
+    protected List<Cell> path;
     protected Species creatureData;
     protected PathfindingService pathfindingService;
     protected Sentry sentry;
-    private static final float HUNGER_THRESHOLD = 0.75f;
+    protected Cell currentTarget;
 
-    protected Creature(Coordinates coordinates, boolean walkable, Species species, PathfindingService pathfindingService) {
-        super(coordinates, walkable);
+    protected Creature(Cell cell, Species species, PathfindingService pathfindingService, Sentry sentry) {
+        super(cell, false);
         this.hp = species.hp();
-        this. pathfindingService = pathfindingService;
+        this.creatureData = Objects.requireNonNull(species);
+        this.pathfindingService = Objects.requireNonNull(pathfindingService);
+        this.sentry = Objects.requireNonNull(sentry);
+    }
+
+    public void makeMove() {
+        starve();
+        if (hp <= 0) return;
+
+        Cell target = offerNextMove();
+        if (target == null) return;
+
+        if (currentTarget == null || !currentTarget.equals(target)) {
+            currentTarget = target;
+            path = null;
+        }
+        moveTowardsTarget(target);
     }
 
     protected void starve() {
@@ -26,41 +42,55 @@ public abstract class Creature extends Entity{
         }
     }
 
-    protected void offerNextMove() {
+    protected Cell offerNextMove() {
         if (isHungry()) {
-            scanCurrentPosition().ifPresent(this::moveTowardsTarget);
-        } else {
-            // додати логіку wander();
+            List<Cell> possibleMoves = scanCurrentPosition(creatureData.vision());
+            if (!possibleMoves.isEmpty()) {
+                for (Cell cell : possibleMoves) {
+                    Entity entity = cell.getEntity();
+                    if (testIfEntityIsFood(entity)) {
+                        return entity.getCell();
+                    }
+                }
+            }
         }
+        return wander();
     }
 
-    protected Optional<Coordinates> scanCurrentPosition() {
-        throw new UnsupportedOperationException("scanCurrentPosition not implemented yet");
+    protected List<Cell> scanCurrentPosition(int vision) {
+        return sentry.getAvailableCellsForNextMove(getCell(), vision); // Implement that method in SENTRY!!
     }
 
-    protected void moveTowardsTarget(Coordinates target) {
-        List<Coordinates> path = pathfindingService.findPath(getCoordinates(), target);
-
+    protected void moveTowardsTarget(Cell target) {
+        if (path == null || path.isEmpty()) {
+            path = pathfindingService.findPath(getCell(), target);
+        }
         if (path.isEmpty()) return;
         if (path.size() == 1) return;
 
-        moveTo(path.get(1));
+        Cell next = path.get(1);
+        moveTo(next);
+        path.remove(0);
     }
 
-    protected void wander(Coordinates coordinates) {
-        // logic
-        moveTo(coordinates);
+    protected Cell wander() {
+        //Create a wander method; !!
+        throw new RuntimeException("This method is not yet implemented");
     }
 
     protected boolean isHungry() {
-        return hp <= creatureData.hp() * HUNGER_THRESHOLD;
+        return hp <= creatureData.hp() * creatureData.hunger_threshold();
     }
 
-    protected void moveTo(Coordinates coordinates) {
-        sentry.requestMoveTo(coordinates);
+    protected void moveTo(Cell cell) {
+        sentry.requestMoveTo(cell, this); // IMPLEMENT THAT IN SENTRY!!
     }
 
     protected void die() {
-        sentry.requestCreatureDeath();
+        sentry.requestCreatureDeath(this); // IMPLEMENT
+    }
+
+    protected boolean testIfEntityIsFood(Entity entity) {
+        return entity != null && creatureData.canEat(entity);
     }
 }

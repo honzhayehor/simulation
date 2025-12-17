@@ -1,10 +1,10 @@
 package entities;
 
-import logic.Coordinates;
+import logic.Cell;
 
 public class Rock extends Entity{
-    public Rock(Coordinates coordinates) {
-        super(coordinates, false);
+    public Rock(Cell cell) {
+        super(cell, false);
     }
 
     @Override

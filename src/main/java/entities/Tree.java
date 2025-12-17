@@ -1,11 +1,11 @@
 package entities;
 
-import logic.Coordinates;
+import logic.Cell;
 
 public class Tree extends Entity{
 
-    public Tree(Coordinates coordinates) {
-        super(coordinates, false);
+    public Tree(Cell cell) {
+        super(cell, false);
     }
 
     @Override
