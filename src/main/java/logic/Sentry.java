@@ -10,7 +10,7 @@ public class Sentry {
     }
 
     public void requestCreatureDeath(Creature creature) {
-
+        Cell currentCell = creature.getCell();
     }
 
     public List<Cell> getAvailableCellsForNextMove(Cell currentCreaturePosition, int vision) {

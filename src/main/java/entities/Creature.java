@@ -70,11 +70,11 @@ public abstract class Creature extends Entity {
 
         Cell next = path.get(1);
         moveTo(next);
-        path.remove(0);
+        path.removeFirst();
     }
 
     protected Cell wander() {
-        //Create a wander method; !!
+        // TODO: Create a wander method; !!
         throw new RuntimeException("This method is not yet implemented");
     }
 
@@ -83,14 +83,14 @@ public abstract class Creature extends Entity {
     }
 
     protected void moveTo(Cell cell) {
-        sentry.requestMoveTo(cell, this); // IMPLEMENT THAT IN SENTRY!!
+        sentry.requestMoveTo(cell, this); // TODO: IMPLEMENT THAT IN SENTRY!!
     }
 
     protected void die() {
-        sentry.requestCreatureDeath(this); // IMPLEMENT
+        sentry.requestCreatureDeath(this); // TODO: IMPLEMENT
     }
 
     protected boolean testIfEntityIsFood(Entity entity) {
-        return entity != null && creatureData.canEat(entity);
+        return creatureData.canEat(entity);
     }
 }
