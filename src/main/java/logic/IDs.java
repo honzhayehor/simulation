@@ -2,23 +2,12 @@ package logic;
 
 import entities.Entity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-public final class IDs {
-    private final List<Integer> ids = new ArrayList<>();
-    private final Random random = new Random();
+public class IDs {
+    private static int lastId = 0;
 
-    public void addEntityId(Entity entity) {
-
+    public static synchronized int assignID() {
+        return ++lastId;
     }
-
-    private boolean checkIfIdInList(int id) {
-        if (ids.contains(id)) {
-            return true;
-        }
-        return false;
-    }
-
 }

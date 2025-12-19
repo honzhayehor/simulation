@@ -1,12 +1,13 @@
 package entities;
 
 import logic.Cell;
+import logic.IDs;
 
 import java.util.Objects;
 
 public abstract class Entity {
     private final boolean walkable;
-    //private final int EID;
+    private final int EID = IDs.assignID();
     private Cell cell;
 
     protected Entity(Cell cell, boolean walkable) {
@@ -24,9 +25,11 @@ public abstract class Entity {
         return cell;
     }
 
-    public void setCoordinates(Cell cell) {
+    public void setCell(Cell cell) {
         this.cell = cell;
     }
+
+    public int getEID() { return EID; }
 
     @Override
     public boolean equals(Object object) {
