@@ -10,15 +10,15 @@ public abstract class Creature extends Entity {
     protected List<Cell> path;
     protected Species creatureData;
     protected PathfindingService pathfindingService;
-    protected Sentry sentry;
+    protected Actions actions;
     protected Cell currentTarget;
 
-    protected Creature(Cell cell, Species species, PathfindingService pathfindingService, Sentry sentry) {
+    protected Creature(Cell cell, Species species, PathfindingService pathfindingService, Actions actions) {
         super(cell, false);
         this.hp = species.hp();
         this.creatureData = Objects.requireNonNull(species);
         this.pathfindingService = Objects.requireNonNull(pathfindingService);
-        this.sentry = Objects.requireNonNull(sentry);
+        this.actions = Objects.requireNonNull(actions);
     }
 
     public void makeMove() {
@@ -47,7 +47,7 @@ public abstract class Creature extends Entity {
             List<Cell> possibleMoves = scanCurrentPosition(creatureData.vision());
             if (!possibleMoves.isEmpty()) {
                 for (Cell cell : possibleMoves) {
-                    Entity entity = cell.getEntity();
+                    Entity entity = actions.getEntityFromCell(cell);
                     if (testIfEntityIsFood(entity)) {
                         return entity.getCell();
                     }
@@ -58,7 +58,7 @@ public abstract class Creature extends Entity {
     }
 
     protected List<Cell> scanCurrentPosition(int vision) {
-        return sentry.getAvailableCellsForNextMove(getCell(), vision); // Implement that method in SENTRY!!
+        return actions.getAvailableCellsForNextMove(getCell(), vision); // Implement that method in SENTRY!!
     }
 
     protected void moveTowardsTarget(Cell target) {
@@ -74,7 +74,6 @@ public abstract class Creature extends Entity {
     }
 
     protected Cell wander() {
-        // TODO: Create a wander method; !!
         throw new RuntimeException("This method is not yet implemented");
     }
 
@@ -83,14 +82,26 @@ public abstract class Creature extends Entity {
     }
 
     protected void moveTo(Cell cell) {
-        sentry.requestMoveTo(cell, this); // TODO: IMPLEMENT THAT IN SENTRY!!
+        actions.requestMoveToCell(cell, this);
     }
 
     protected void die() {
-        sentry.requestCreatureDeath(this); // TODO: IMPLEMENT
+        actions.requestEntityDeath(this);
     }
 
     protected boolean testIfEntityIsFood(Entity entity) {
         return creatureData.canEat(entity);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Creature creature)) return false;
+        if (!super.equals(object)) return false;
+        return hp == creature.hp && creatureData == creature.creatureData;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), hp, creatureData);
     }
 }

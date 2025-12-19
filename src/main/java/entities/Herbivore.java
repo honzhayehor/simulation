@@ -2,12 +2,12 @@ package entities;
 
 import logic.Cell;
 import logic.PathfindingService;
-import logic.Sentry;
+import logic.Actions;
 import logic.Species;
 
 public class Herbivore extends Creature {
-    protected Herbivore(Cell cell,  Species species, PathfindingService pathfindingService, Sentry sentry) {
-        super(cell, species, pathfindingService, sentry);
+    protected Herbivore(Cell cell,  Species species, PathfindingService pathfindingService, Actions actions) {
+        super(cell, species, pathfindingService, actions);
     }
 
     @Override
