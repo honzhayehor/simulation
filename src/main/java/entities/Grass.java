@@ -2,7 +2,7 @@ package entities;
 
 import attributes.Edible;
 import logic.Cell;
-import logic.Energy;
+import data.Energy;
 import attributes.Renderable;
 
 public class Grass extends Entity implements Edible, Renderable {

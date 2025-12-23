@@ -1,4 +1,4 @@
-package logic;
+package data;
 
 public class IDs {
     private static int lastId = 0;

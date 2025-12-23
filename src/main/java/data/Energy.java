@@ -1,4 +1,4 @@
-package logic;
+package data;
 
 public enum Energy {
     GRASS(10),

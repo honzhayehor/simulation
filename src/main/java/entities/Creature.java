@@ -1,5 +1,6 @@
 package entities;
 
+import data.Species;
 import logic.*;
 
 import java.util.Deque;
@@ -7,12 +8,12 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract class Creature extends Entity {
-    protected int hp;
-    protected Deque<Cell> path;
-    protected Species creatureData;
-    protected PathfindingService pathfindingService;
-    protected Actions actions;
-    protected Cell currentTarget;
+    private int hp;
+    private Deque<Cell> path;
+    private Species creatureData;
+    private PathfindingService pathfindingService;
+    private Actions actions;
+    private Cell currentTarget;
 
     protected Creature(Cell cell, Species species, PathfindingService pathfindingService, Actions actions) {
         super(cell, false);

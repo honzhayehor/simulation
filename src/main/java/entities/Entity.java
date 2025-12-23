@@ -1,9 +1,7 @@
 package entities;
 
 import logic.Cell;
-import logic.IDs;
-
-import java.util.Objects;
+import data.IDs;
 
 public abstract class Entity {
     private final boolean walkable;

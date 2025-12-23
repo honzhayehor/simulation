@@ -1,4 +1,4 @@
-package logic;
+package data;
 
 import entities.Entity;
 import entities.Grass;
