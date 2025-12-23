@@ -15,8 +15,6 @@ public abstract class Entity {
         this.walkable = walkable;
     }
 
-    public abstract String getAvatar();
-
     public boolean isWalkable() {
         return !walkable;
     }

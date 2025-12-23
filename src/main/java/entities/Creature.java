@@ -23,8 +23,8 @@ public abstract class Creature extends Entity {
     }
 
     public void makeMove() {
-        starve();
         if (hp <= 0) return;
+        starve();
 
         Cell target = offerNextMove();
         if (target == null) return;

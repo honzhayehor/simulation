@@ -9,9 +9,4 @@ public class Herbivore extends Creature {
     protected Herbivore(Cell cell,  Species species, PathfindingService pathfindingService, Actions actions) {
         super(cell, species, pathfindingService, actions);
     }
-
-    @Override
-    public String getAvatar() {
-        return "";
-    }
 }
