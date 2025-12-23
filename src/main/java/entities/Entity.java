@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public abstract class Entity {
     private final boolean walkable;
-    private final int EID = IDs.assignID();
+    protected final int eid = IDs.assignId();
     private Cell cell;
 
     protected Entity(Cell cell, boolean walkable) {
@@ -29,16 +29,17 @@ public abstract class Entity {
         this.cell = cell;
     }
 
-    public int getEID() { return EID; }
+    public int getEID() { return eid; }
 
     @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Entity entity)) return false;
-        return Objects.equals(cell, entity.cell);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Entity other)) return false;
+        return this.eid == other.eid;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(cell);
+        return Integer.hashCode(eid);
     }
 }

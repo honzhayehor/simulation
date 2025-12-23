@@ -2,6 +2,8 @@ package logic;
 
 import entities.Entity;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +18,12 @@ public class PathfindingService {
         this.height = height;
     }
 
-    public List<Cell> findPath(Cell start, Cell target) {
-        return AStar.getInstance().findPath(start, target, worldMap, width, height);
+    public Deque<Cell> findPath(Cell start, Cell target) {
+        List<Cell> path = AStar.getInstance()
+                .findPath(start, target, worldMap, width, height);
+
+        return path == null || path.isEmpty()
+                ? new ArrayDeque<>()
+                : new ArrayDeque<>(path);
     }
 }

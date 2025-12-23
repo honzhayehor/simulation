@@ -2,12 +2,13 @@ package entities;
 
 import logic.*;
 
+import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
 
 public abstract class Creature extends Entity {
     protected int hp;
-    protected List<Cell> path;
+    protected Deque<Cell> path;
     protected Species creatureData;
     protected PathfindingService pathfindingService;
     protected Actions actions;
@@ -48,7 +49,7 @@ public abstract class Creature extends Entity {
             if (!possibleMoves.isEmpty()) {
                 for (Cell cell : possibleMoves) {
                     Entity entity = actions.getEntityFromCell(cell);
-                    if (testIfEntityIsFood(entity)) {
+                    if (entity != null && testIfEntityIsFood(entity)) {
                         return entity.getCell();
                     }
                 }
@@ -62,18 +63,31 @@ public abstract class Creature extends Entity {
     }
 
     protected void moveTowardsTarget(Cell target) {
+        if (target == null) {
+            path = null;
+            return;
+        }
+
         if (path == null || path.isEmpty()) {
             path = pathfindingService.findPath(getCell(), target);
-        }
-        if (path.isEmpty()) return;
-        if (path.size() == 1) return;
 
-        Cell next = path.get(1);
-        moveTo(next);
-        path.removeFirst();
+            if (path == null || path.size() <= 1) {
+                path = null;
+                return;
+            }
+            path.pollFirst();
+        }
+        Cell next = path.pollFirst();
+        if (next != null) {
+            moveTo(next);
+        }
+        if (path.isEmpty()) {
+            path = null;
+        }
     }
 
     protected Cell wander() {
+        // TODO: Implement this method!
         throw new RuntimeException("This method is not yet implemented");
     }
 
@@ -93,15 +107,4 @@ public abstract class Creature extends Entity {
         return creatureData.canEat(entity);
     }
 
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Creature creature)) return false;
-        if (!super.equals(object)) return false;
-        return hp == creature.hp && creatureData == creature.creatureData;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), hp, creatureData);
-    }
 }
