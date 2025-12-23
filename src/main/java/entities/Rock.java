@@ -1,8 +1,9 @@
 package entities;
 
+import attributes.Renderable;
 import logic.Cell;
 
-public class Rock extends Entity{
+public class Rock extends Entity implements Renderable {
     public Rock(Cell cell) {
         super(cell, false);
     }
