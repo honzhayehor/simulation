@@ -2,18 +2,28 @@ package logic;
 
 import entities.Entity;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public final class WorldMap {
-    private Map<Cell, List<Entity>> worldMap;
+    private Map<Cell, Entity> worldMap;
     private final int width;
     private final int height;
 
     public WorldMap(int width, int height) {
         this.width = width;
         this.height = height;
+        worldMap = new HashMap<>();
+        populateMap(this.width, this.height, worldMap);
+    }
+
+    private void populateMap(int width, int height, Map<Cell, Entity> map) {
+        for (int i = 1; i <= width; i++) {
+            for (int j = 1; j <= height; j++) {
+                Cell cell = new Cell(i, j);
+                map.put(cell, EntityFactory.getEntity(cell));
+            }
+        }
     }
 
     public void setEntityInCell(Cell cell, Entity entity) {
