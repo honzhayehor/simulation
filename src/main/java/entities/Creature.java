@@ -1,11 +1,13 @@
 package entities;
 
+import attributes.Edible;
 import data.Species;
 import logic.*;
 
 import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Creature extends Entity {
     private int hp;
@@ -17,8 +19,8 @@ public abstract class Creature extends Entity {
 
     protected Creature(Cell cell, Species species, PathfindingService pathfindingService, Actions actions) {
         super(cell, false);
-        this.hp = species.hp();
         this.creatureData = Objects.requireNonNull(species);
+        this.hp = creatureData.hp();
         this.pathfindingService = Objects.requireNonNull(pathfindingService);
         this.actions = Objects.requireNonNull(actions);
     }
@@ -26,15 +28,37 @@ public abstract class Creature extends Entity {
     public void makeMove() {
         if (hp <= 0) return;
         starve();
+        if (hp <= 0) return;
 
-        Cell target = offerNextMove();
-        if (target == null) return;
+        Cell target = (currentTarget != null) ? currentTarget : offerTarget();
 
-        if (currentTarget == null || !currentTarget.equals(target)) {
+        if (target == null) {
+            wander();
+            return;
+        }
+
+        if (!target.equals(currentTarget)) {
             currentTarget = target;
             path = null;
         }
-        moveTowardsTarget(target);
+
+        if (isInVicinity(target)) {
+            Entity targetToEat = actions.getEntityFromCell(target);
+            if (targetToEat != null) {
+                eat(targetToEat);
+                actions.requestEntityDeath(targetToEat);
+            }
+            currentTarget = null;
+            path = null;
+        } else {
+            moveTowardsTarget(target);
+        }
+    }
+
+    protected void eat(Entity entity) {
+        if (entity instanceof Edible ed && creatureData.canEat(entity)) {
+            hp += ed.energy();
+        }
     }
 
     protected void starve() {
@@ -44,7 +68,16 @@ public abstract class Creature extends Entity {
         }
     }
 
-    protected Cell offerNextMove() {
+    protected boolean isInVicinity(Cell targetCell) {
+        Cell current = getCell();
+
+        int dx = Math.abs(current.x() - targetCell.x());
+        int dy = Math.abs(current.y() - targetCell.y());
+
+        return dx + dy == 1;
+    }
+
+    protected Cell offerTarget() {
         if (isHungry()) {
             List<Cell> possibleMoves = scanCurrentPosition(creatureData.vision());
             if (!possibleMoves.isEmpty()) {
@@ -56,7 +89,7 @@ public abstract class Creature extends Entity {
                 }
             }
         }
-        return wander();
+        return null;
     }
 
     protected List<Cell> scanCurrentPosition(int vision) {
@@ -87,9 +120,20 @@ public abstract class Creature extends Entity {
         }
     }
 
-    protected Cell wander() {
-        // TODO: Implement this method!
-        throw new RuntimeException("This method is not yet implemented");
+    protected void wander() {
+        List<Cell> candidates = actions.getAvailableCellsForNextMove(getCell(), 1);
+
+        candidates.removeIf(c -> !isInVicinity(c));
+
+        candidates.removeIf(c -> {
+            Entity e = actions.getEntityFromCell(c);
+            return e != null && !e.isWalkable();
+        });
+
+        if (candidates.isEmpty()) return;
+
+        int index = ThreadLocalRandom.current().nextInt(candidates.size());
+        moveTo(candidates.get(index));
     }
 
     protected boolean isHungry() {
