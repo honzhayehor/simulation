@@ -6,7 +6,7 @@ import logic.Cell;
 public class Tree extends Entity implements Renderable {
 
     public Tree(Cell cell) {
-        super(cell, false);
+        super(cell);
     }
 
     @Override

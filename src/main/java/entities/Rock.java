@@ -5,7 +5,7 @@ import logic.Cell;
 
 public class Rock extends Entity implements Renderable {
     public Rock(Cell cell) {
-        super(cell, false);
+        super(cell);
     }
 
     @Override

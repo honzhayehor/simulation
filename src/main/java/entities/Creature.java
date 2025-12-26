@@ -18,7 +18,7 @@ public abstract class Creature extends Entity {
     private Cell currentTarget;
 
     protected Creature(Cell cell, Species species, PathfindingService pathfindingService, Actions actions) {
-        super(cell, false);
+        super(cell);
         this.creatureData = Objects.requireNonNull(species);
         this.hp = creatureData.hp();
         this.pathfindingService = Objects.requireNonNull(pathfindingService);

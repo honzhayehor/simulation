@@ -8,7 +8,7 @@ import attributes.Renderable;
 public class Grass extends Entity implements Edible, Renderable {
 
     public Grass(Cell cell) {
-        super(cell, true);
+        super(cell);
     }
 
     @Override

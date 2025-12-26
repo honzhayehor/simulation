@@ -8,9 +8,9 @@ public abstract class Entity {
     protected final int eid = IDs.assignId();
     private Cell cell;
 
-    protected Entity(Cell cell, boolean walkable) {
+    protected Entity(Cell cell) {
         this.cell = cell;
-        this.walkable = walkable;
+        this.walkable = false;
     }
 
     public boolean isWalkable() {
