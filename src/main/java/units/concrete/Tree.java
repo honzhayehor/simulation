@@ -8,4 +8,9 @@ public class Tree extends Entity {
     public String getRepresentation() {
         return "🌳";
     }
+
+    @Override
+    public boolean isPassable() {
+        return false;
+    }
 }

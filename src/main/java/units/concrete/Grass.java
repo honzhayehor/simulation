@@ -3,9 +3,8 @@ package units.concrete;
 import units.abstraction.Entity;
 import units.configs.Energy;
 import units.interfaces.Edible;
-import units.interfaces.Passable;
 
-public class Grass extends Entity implements Edible, Passable {
+public class Grass extends Entity implements Edible {
     @Override
     public String getRepresentation() {
         return "🌿";

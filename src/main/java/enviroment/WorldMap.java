@@ -2,25 +2,26 @@ package enviroment;
 
 import units.abstraction.Entity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class WorldMap {
-    private final Map<Cell, List<Entity>> map;
+    private final Map<Cell, Set<Entity>> map;
     public WorldMap(int width, int height) {
         map = initMap(width, height);
     }
 
-    private Map<Cell, List<Entity>> initMap(int xLength, int yLength) {
-        Map<Cell, List<Entity>> wm = new HashMap<>();
+    public WorldMap() {
+        map = initMap(10, 10); // default constructor
+    }
+
+    private Map<Cell, Set<Entity>> initMap(int xLength, int yLength) {
+        Map<Cell, Set<Entity>> wm = new HashMap<>();
         if (xLength <= 0 || yLength <= 0) {
             throw new IllegalArgumentException("x or y cannot be null");
         }
         for (int i = 0; i < xLength; i++) {
             for (int j = 0; j < yLength; j++) {
-                wm.put(new Cell(i, j), new ArrayList<>());
+                wm.put(new Cell(i, j), new HashSet<>());
             }
         }
         return wm;
@@ -28,7 +29,7 @@ public final class WorldMap {
 
     public boolean cellContainsEntity(Cell cell) {
         if (cell == null) throw new IllegalArgumentException("Cell cannot be null");
-        List<Entity> list = map.get(cell);
+        Set<Entity> list = map.get(cell);
         return !list.isEmpty();
     }
 
@@ -51,4 +52,14 @@ public final class WorldMap {
         return null;
     }
 
+    public void addEntityToCell(Cell cell, Entity entity) {
+        if (cell == null || entity == null) {
+            throw new IllegalArgumentException("Cell and entity cannot be null");
+        }
+        Set<Entity> entities = map.get(cell);
+        if (entities == null) {
+            throw new IllegalArgumentException("Cell not found: " + cell);
+        }
+        entities.add(entity);
+    }
 }
