@@ -2,9 +2,9 @@ package units.concrete;
 
 import units.abstraction.Entity;
 import units.configs.Energy;
-import units.interfaces.Edible;
+import units.interfaces.PlantBased;
 
-public class Grass extends Entity implements Edible {
+public class Grass extends Entity implements PlantBased {
     @Override
     public String getRepresentation() {
         return "🌿";

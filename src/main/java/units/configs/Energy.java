@@ -2,10 +2,11 @@ package units.configs;
 
 public enum Energy {
     GRASS(10);
-    private int energy;
+
+    private final int points;
     Energy(int points) {
-        this.energy = points;
+        this.points = points;
     }
 
-    public int getEnergy() { return energy;}
+    public int getEnergy() { return points;}
 }
