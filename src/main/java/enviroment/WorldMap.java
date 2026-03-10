@@ -62,4 +62,14 @@ public final class WorldMap {
         }
         entities.add(entity);
     }
+
+    public boolean suggestMove(Cell cell) {
+        // TODO Implement that will validate that move (if cell contains entities, and if yes, are all of them implement Passable?
+        return false;
+    }
+
+    public Cell findCellOfEntity(Entity entity) {
+        // TODO: Implement to find cell of this entity (by id)
+        return new Cell(0,0);
+    }
 }

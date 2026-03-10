@@ -1,13 +1,28 @@
 package units.abstraction;
 
+import enviroment.Cell;
+import enviroment.WorldMap;
+import logic.Pathfinder;
 import units.configs.FoodChain;
+import units.configs.SightRange;
 import units.interfaces.Edible;
+
+import java.util.List;
 
 public abstract class Creature extends Entity {
     protected int hp;
     protected int maxHp;
     protected boolean isAlive = true;
     protected int moveSpeed;
+    protected final WorldMap map;
+    protected final Pathfinder algorithm;
+    protected final int vision;
+
+    protected Creature(WorldMap map, Pathfinder algorithm, SightRange range) {
+        this.map = map;
+        this.algorithm = algorithm;
+        this.vision = range.getVisionRange();
+    }
 
     protected abstract void makeMove();
     protected abstract FoodChain getFoodChain();
@@ -23,5 +38,19 @@ public abstract class Creature extends Entity {
 
     protected void eat(Edible edible) {
         hp = Math.min(maxHp, hp + edible.getEnergy());
+    }
+
+    protected List<Cell> findPathToDestination(Entity entity) {
+        Cell cell = map.findCellOfEntity(entity);
+        return algorithm.findPath(cell);
+    }
+
+    protected boolean moveToDestination(Cell cell) {
+        return map.suggestMove(cell);
+    }
+
+    protected Entity lookForFoodInVicinity() {
+        // TODO: Implement method to look for food in vicinity based on creature vision
+        return null;
     }
 }
