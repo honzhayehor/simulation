@@ -11,12 +11,12 @@ public final class WorldMap {
     }
 
     public WorldMap() {
-        map = initMap(10, 10); // default constructor
+        map = initMap(10, 10);
     }
 
     private Map<Cell, Set<Entity>> initMap(int xLength, int yLength) {
         Map<Cell, Set<Entity>> wm = new HashMap<>();
-        if (xLength <= 0 || yLength <= 0) {
+        if (xLength < 0 || yLength < 0) {
             throw new IllegalArgumentException("x or y cannot be null");
         }
         for (int i = 0; i < xLength; i++) {
@@ -44,12 +44,8 @@ public final class WorldMap {
     }
 
     private Cell findCellByCoordinates(int x, int y) {
-        for (Cell cell : map.keySet()) {
-            if (cell.x() == x && cell.y() == y) {
-                return cell;
-            }
-        }
-        return null;
+        Cell key = new Cell(x, y);
+        return map.containsKey(key) ? key : null;
     }
 
     public void addEntityToCell(Cell cell, Entity entity) {
@@ -64,12 +60,16 @@ public final class WorldMap {
     }
 
     public boolean suggestMove(Cell cell) {
-        // TODO Implement that will validate that move (if cell contains entities, and if yes, are all of them implement Passable?
-        return false;
+        Set<Entity> entities = map.get(cell);
+        if (entities == null) throw new IllegalArgumentException("Cell not found: " + cell);
+        return entities.stream().allMatch(Entity::isPassable);
     }
 
     public Cell findCellOfEntity(Entity entity) {
-        // TODO: Implement to find cell of this entity (by id)
-        return new Cell(0,0);
+        return map.entrySet().stream()
+                .filter(entry -> entry.getValue().contains(entity))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
     }
 }
