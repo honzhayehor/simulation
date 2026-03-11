@@ -78,36 +78,51 @@ public final class WorldMap {
                 .findFirst()
                 .orElse(null);
     }
+    private record SearchBoundaries(int x, int y, int minX, int maxX, int minY, int maxY) {}
+
+    private SearchBoundaries getSquareBoundaries(Cell cell, int vision) {
+        int x = cell.x();
+        int y = cell.y();
+        return new SearchBoundaries(
+                x, y,
+                Math.max(0, x - vision),
+                Math.min(width - 1, x + vision),
+                Math.max(0, y - vision),
+                Math.min(height - 1, y + vision)
+        );
+    }
+
+    private double distanceTo(Cell from, Cell to) {
+        return Math.pow(from.x() - to.x(), 2) + Math.pow(from.y() - to.y(), 2);
+    }
+
+    private Optional<Entity> findEntitiesCreatureCanEat(Cell cell, Creature creature) {
+        Set<Entity> entities = map.get(cell);
+        if (entities == null) return Optional.empty();
+
+        return entities.stream()
+                .filter(creature::canEat)
+                .findFirst();
+    }
 
     public Optional<Entity> getClosestEntity(Creature creature) {
         Cell creatureCell = findCellOfEntity(creature);
-        int x = creatureCell.x();
-        int y = creatureCell.y();
-        int vision = creature.getVision();
-
-        int minX = Math.max(0, x - vision);
-        int minY = Math.max(0, y - vision);
-        int maxX = Math.min(width - 1, x + vision);
-        int maxY = Math.min(height - 1, y + vision);
+        SearchBoundaries b = getSquareBoundaries(creatureCell, creature.getVision());
 
         Entity closest = null;
         double closestDistance = Double.MAX_VALUE;
 
-        for (int i = minX; i <= maxX; i++) {
-            for (int j = minY; j <= maxY; j++) {
-                if (i == x && j == y) continue;
+        for (int i = b.minX(); i <= b.maxX(); i++) {
+            for (int j = b.minY(); j <= b.maxY(); j++) {
+                Cell current = new Cell(i, j);
+                if (current.equals(creatureCell)) continue;
 
-                Set<Entity> entities = map.get(new Cell(i, j));
-                if (entities == null) continue;
+                Optional<Entity> candidate = findEntitiesCreatureCanEat(current, creature);
+                double distance = distanceTo(current, creatureCell);
 
-                for (Entity e : entities) {
-                    if (!creature.canEat(e)) continue;
-
-                    double distance = Math.sqrt(Math.pow(i - x, 2) + Math.pow(j - y, 2));
-                    if (distance < closestDistance) {
-                        closestDistance = distance;
-                        closest = e;
-                    }
+                if (candidate.isPresent() && distance < closestDistance) {
+                    closestDistance = distance;
+                    closest = candidate.get();
                 }
             }
         }
