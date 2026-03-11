@@ -24,7 +24,7 @@ public abstract class Creature extends Entity {
         this.vision = range.getVisionRange();
     }
 
-    protected abstract void makeMove();
+    public abstract void makeMove();
     protected abstract FoodChain getFoodChain();
     protected void die() { isAlive = false;}
 
@@ -32,7 +32,7 @@ public abstract class Creature extends Entity {
         hp = Math.max(0, hp - amount);
         if (hp == 0) die();
     }
-    protected boolean canEat(Entity entity) {
+    public boolean canEat(Entity entity) {
         return getFoodChain().canEat(entity);
     }
 
@@ -49,8 +49,9 @@ public abstract class Creature extends Entity {
         return map.suggestMove(cell);
     }
 
+    public int getVision() {return vision;}
+
     protected Entity lookForFoodInVicinity() {
-        // TODO: Implement method to look for food in vicinity based on creature vision
-        return null;
+        return map.getClosestEntity(this).orElse(null);
     }
 }

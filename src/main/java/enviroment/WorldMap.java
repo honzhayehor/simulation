@@ -1,12 +1,18 @@
 package enviroment;
 
+import units.abstraction.Creature;
 import units.abstraction.Entity;
 
 import java.util.*;
 
 public final class WorldMap {
     private final Map<Cell, Set<Entity>> map;
+    private int width;
+    private int height;
+
     public WorldMap(int width, int height) {
+        this.width = width;
+        this.height = height;
         map = initMap(width, height);
     }
 
@@ -71,5 +77,41 @@ public final class WorldMap {
                 .map(Map.Entry::getKey)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public Optional<Entity> getClosestEntity(Creature creature) {
+        Cell creatureCell = findCellOfEntity(creature);
+        int x = creatureCell.x();
+        int y = creatureCell.y();
+        int vision = creature.getVision();
+
+        int minX = Math.max(0, x - vision);
+        int minY = Math.max(0, y - vision);
+        int maxX = Math.min(width - 1, x + vision);
+        int maxY = Math.min(height - 1, y + vision);
+
+        Entity closest = null;
+        double closestDistance = Double.MAX_VALUE;
+
+        for (int i = minX; i <= maxX; i++) {
+            for (int j = minY; j <= maxY; j++) {
+                if (i == x && j == y) continue;
+
+                Set<Entity> entities = map.get(new Cell(i, j));
+                if (entities == null) continue;
+
+                for (Entity e : entities) {
+                    if (!creature.canEat(e)) continue;
+
+                    double distance = Math.sqrt(Math.pow(i - x, 2) + Math.pow(j - y, 2));
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closest = e;
+                    }
+                }
+            }
+        }
+
+        return Optional.ofNullable(closest);
     }
 }
