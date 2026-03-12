@@ -71,6 +71,10 @@ public final class WorldMap {
         return entities.stream().allMatch(Entity::isPassable);
     }
 
+    public int getWidth() {return width;}
+
+    public int getHeight() {return height;}
+
     public Cell findCellOfEntity(Entity entity) {
         return map.entrySet().stream()
                 .filter(entry -> entry.getValue().contains(entity))
@@ -128,5 +132,9 @@ public final class WorldMap {
         }
 
         return Optional.ofNullable(closest);
+    }
+
+    public List<Cell> asList() {
+        return new ArrayList<>(map.keySet());
     }
 }
