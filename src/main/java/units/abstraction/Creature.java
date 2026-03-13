@@ -7,33 +7,92 @@ import units.configs.FoodChain;
 import units.configs.SightRange;
 import units.interfaces.Edible;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 public abstract class Creature extends Entity {
-    protected int hp;
-    protected int maxHp;
-    protected boolean isAlive = true;
-    protected int moveSpeed;
+    private int hp;
+    private final int maxHp;
+    private final int moveSpeed;
     protected final WorldMap map;
     protected final Pathfinder algorithm;
+    private static final int[][] DIRECTIONS = {{0,-1}, {0,1}, {-1,0}, {1,0}};
+    private static final Random RANDOM = new Random();
     protected final int vision;
 
-    protected Creature(WorldMap map, Pathfinder algorithm, SightRange range) {
+    protected Creature(WorldMap map, Pathfinder algorithm, SightRange range, int baseHp, int moveSpeed) {
         this.map = map;
         this.algorithm = algorithm;
         this.vision = range.getVisionRange();
+        this.maxHp = baseHp;
+        this.hp = baseHp;
+        this.moveSpeed = moveSpeed;
     }
 
-    public abstract void makeMove();
+    public void makeMove() {
+        if (!isAlive()) return;
+        for (int i = 0; i < moveSpeed; i++) {
+            performSingleStep();
+        }
+    }
+
+    public void performSingleStep() {
+        lookForFoodInVicinity().ifPresentOrElse(
+                food -> {
+                    List<Cell> path = findPathToDestination(food);
+                    if (path.size() < 2) return;
+
+                    Cell nextStep = path.get(1);
+
+                    if (isAdjacentToFood(path, food)) {
+                        eat((Edible) food);
+                    } else {
+                        moveToDestination(nextStep);
+                    }
+                },
+                this::wander
+        );
+    }
+
+    private void wander() {
+        Cell current = map.findCellOfEntity(this);
+
+        List<Cell> passableNeighbors = Arrays.stream(DIRECTIONS)
+                .map(dir -> new Cell(current.x() + dir[0], current.y() + dir[1]))
+                .filter(map::isValidCell)    // within map bounds
+                .filter(map::suggestMove)
+                .toList();
+
+        if (passableNeighbors.isEmpty()) return;
+
+        Cell randomCell = passableNeighbors.get(RANDOM.nextInt(passableNeighbors.size()));
+        moveToDestination(randomCell);
+    }
+
     protected abstract FoodChain getFoodChain();
-    protected void die() { isAlive = false;}
+
+    protected void die() {
+        Cell current = map.findCellOfEntity(this);
+        map.removeEntity(this, current);
+    }
+
+    private boolean isAdjacentToFood(List<Cell> path, Entity food) {
+        return path.size() == 2 && food instanceof Edible;
+    }
 
     protected void reduceHp(int amount) {
         hp = Math.max(0, hp - amount);
         if (hp == 0) die();
     }
+
     public boolean canEat(Entity entity) {
         return getFoodChain().canEat(entity);
+    }
+
+    private boolean isAlive() {
+        return hp > 0;
     }
 
     protected void eat(Edible edible) {
@@ -41,17 +100,18 @@ public abstract class Creature extends Entity {
     }
 
     protected List<Cell> findPathToDestination(Entity entity) {
-        Cell cell = map.findCellOfEntity(entity);
-        return algorithm.findPath(cell);
+        Cell currentPost = map.findCellOfEntity(this);
+        Cell target = map.findCellOfEntity(entity);
+        return algorithm.findPath(currentPost, target);
     }
 
-    protected boolean moveToDestination(Cell cell) {
-        return map.suggestMove(cell);
+    protected void moveToDestination(Cell cell) {
+        map.moveEntity(this, cell);
     }
 
     public int getVision() {return vision;}
 
-    protected Entity lookForFoodInVicinity() {
-        return map.getClosestEntity(this).orElse(null);
+    protected Optional<Entity> lookForFoodInVicinity() {
+        return map.getClosestEntity(this);
     }
 }

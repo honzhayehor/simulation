@@ -71,6 +71,14 @@ public final class WorldMap {
         return entities.stream().allMatch(Entity::isPassable);
     }
 
+    public boolean moveEntity(Entity entity, Cell destination) {
+        if (!suggestMove(destination)) return false;
+        Cell current = findCellOfEntity(entity);
+        map.get(current).remove(entity);
+        map.get(destination).add(entity);
+        return true;
+    }
+
     public int getWidth() {return width;}
 
     public int getHeight() {return height;}
@@ -82,6 +90,18 @@ public final class WorldMap {
                 .findFirst()
                 .orElse(null);
     }
+
+    public void removeEntity(Entity entity, Cell cell) {
+        Objects.requireNonNull(entity, "Entity cannot be null");
+        Objects.requireNonNull(cell, "Cell cannot be null");
+
+        Set<Entity> entities = map.get(cell);
+        if (entities == null) throw new IllegalArgumentException("Cell not found: " + cell);
+
+        boolean removed = entities.remove(entity);
+        if (!removed) throw new IllegalStateException("Entity not found in cell: " + cell);
+    }
+
     private record SearchBoundaries(int x, int y, int minX, int maxX, int minY, int maxY) {}
 
     private SearchBoundaries getSquareBoundaries(Cell cell, int vision) {
@@ -107,6 +127,11 @@ public final class WorldMap {
         return entities.stream()
                 .filter(creature::canEat)
                 .findFirst();
+    }
+
+    public boolean isValidCell(Cell cell) {
+        return cell.x() >= 0 && cell.x() < width
+                && cell.y() >= 0 && cell.y() < height;
     }
 
     public Optional<Entity> getClosestEntity(Creature creature) {
