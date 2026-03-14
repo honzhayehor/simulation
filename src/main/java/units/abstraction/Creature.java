@@ -3,8 +3,7 @@ package units.abstraction;
 import enviroment.Cell;
 import enviroment.WorldMap;
 import logic.Pathfinder;
-import units.configs.FoodChain;
-import units.configs.SightRange;
+import units.configs.*;
 import units.interfaces.Edible;
 
 import java.util.Arrays;
@@ -13,22 +12,19 @@ import java.util.Optional;
 import java.util.Random;
 
 public abstract class Creature extends Entity {
-    private int hp;
-    private final int maxHp;
     private final int moveSpeed;
-    protected final WorldMap map;
     protected final Pathfinder algorithm;
     private static final int[][] DIRECTIONS = {{0,-1}, {0,1}, {-1,0}, {1,0}};
     private static final Random RANDOM = new Random();
     protected final int vision;
+    protected final int attackPower;
 
-    protected Creature(WorldMap map, Pathfinder algorithm, SightRange range, int baseHp, int moveSpeed) {
-        this.map = map;
+    protected Creature(WorldMap map, Pathfinder algorithm, SightRange range, BaseHp baseHp, CreatureMoveSpeed creatureMoveSpeed, CreatureAttackPower attackPower) {
+        super(baseHp, map);
         this.algorithm = algorithm;
         this.vision = range.getVisionRange();
-        this.maxHp = baseHp;
-        this.hp = baseHp;
-        this.moveSpeed = moveSpeed;
+        this.moveSpeed = creatureMoveSpeed.getSpeed();
+        this.attackPower = attackPower.getAttackPower();
     }
 
     public void makeMove() {
@@ -47,7 +43,9 @@ public abstract class Creature extends Entity {
                     Cell nextStep = path.get(1);
 
                     if (isAdjacentToFood(path, food)) {
-                        eat((Edible) food);
+                        if (attack(attackPower, food)) {
+                            eat((Edible) food);
+                        }
                     } else {
                         moveToDestination(nextStep);
                     }
@@ -73,18 +71,12 @@ public abstract class Creature extends Entity {
 
     protected abstract FoodChain getFoodChain();
 
-    protected void die() {
-        Cell current = map.findCellOfEntity(this);
-        map.removeEntity(this, current);
+    protected boolean attack(int attackPower, Entity entity){
+        return entity.reduceHp(attackPower);
     }
 
     private boolean isAdjacentToFood(List<Cell> path, Entity food) {
         return path.size() == 2 && food instanceof Edible;
-    }
-
-    protected void reduceHp(int amount) {
-        hp = Math.max(0, hp - amount);
-        if (hp == 0) die();
     }
 
     public boolean canEat(Entity entity) {
