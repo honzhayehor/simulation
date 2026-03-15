@@ -18,7 +18,7 @@ class WorldMapTest {
     void givenNonEmptyMapContainsEntityReturnsTrue() {
         WorldMap worldMap = new WorldMap(10, 10);
         Creature creature = Mockito.mock(Creature.class);
-        worldMap.addEntityToCell(new Cell(1, 1), creature);
+        worldMap.addEntityToCell(worldMap.cellOf(1, 1).get(), creature);
         assertTrue(worldMap.cellContainsEntity(1,1));
     }
 }

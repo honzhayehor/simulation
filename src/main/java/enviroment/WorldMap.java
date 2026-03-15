@@ -7,6 +7,8 @@ import java.util.*;
 
 public final class WorldMap {
     private final Map<Cell, Set<Entity>> map;
+    private final Map<Entity, Cell> entityLocation = new HashMap<>();
+    private final Map<String, Cell> cells = new HashMap<>();
     private int width;
     private int height;
 
@@ -27,10 +29,20 @@ public final class WorldMap {
         }
         for (int i = 0; i < xLength; i++) {
             for (int j = 0; j < yLength; j++) {
-                wm.put(new Cell(i, j), new HashSet<>());
+                wm.put(registerCell(i, j), new HashSet<>());
             }
         }
         return wm;
+    }
+
+    public Cell registerCell(int x, int y) {
+        Cell cell = new Cell(x, y);
+        cells.put(x + "," + y, cell);
+        return cell;
+    }
+
+    public Optional<Cell> cellOf(int x, int y) {
+        return Optional.ofNullable(cells.get(x + "," + y));
     }
 
     public boolean cellContainsEntity(Cell cell) {
@@ -40,18 +52,13 @@ public final class WorldMap {
     }
 
     public boolean cellContainsEntity(int coordinateX, int coordinateY) {
-        if (coordinateX <= 0 || coordinateY <= 0)
-            throw new IllegalArgumentException("Coordinates could not be negative or zero");
+        if (coordinateX < 0 || coordinateY < 0)
+            throw new IllegalArgumentException("Coordinates could not be negative");
 
-        Cell cell = findCellByCoordinates(coordinateX, coordinateY);
-        if (cell == null) throw new IllegalArgumentException("Cell not found");
+        Cell cell = cellOf(coordinateX, coordinateY)
+                .orElseThrow(() -> new IllegalArgumentException("Cell not found"));
 
         return cellContainsEntity(cell);
-    }
-
-    private Cell findCellByCoordinates(int x, int y) {
-        Cell key = new Cell(x, y);
-        return map.containsKey(key) ? key : null;
     }
 
     public void addEntityToCell(Cell cell, Entity entity) {
@@ -63,6 +70,7 @@ public final class WorldMap {
             throw new IllegalArgumentException("Cell not found: " + cell);
         }
         entities.add(entity);
+        entityLocation.put(entity, cell);
     }
 
     public boolean suggestMove(Cell cell) {
@@ -76,6 +84,7 @@ public final class WorldMap {
         Cell current = findCellOfEntity(entity);
         map.get(current).remove(entity);
         map.get(destination).add(entity);
+        entityLocation.put(entity, destination);
     }
 
     public int getWidth() {return width;}
@@ -83,11 +92,7 @@ public final class WorldMap {
     public int getHeight() {return height;}
 
     public Cell findCellOfEntity(Entity entity) {
-        return map.entrySet().stream()
-                .filter(entry -> entry.getValue().contains(entity))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElse(null);
+        return entityLocation.get(entity);
     }
 
     public void removeEntity(Entity entity, Cell cell) {
@@ -99,6 +104,7 @@ public final class WorldMap {
 
         boolean removed = entities.remove(entity);
         if (!removed) throw new IllegalStateException("Entity not found in cell: " + cell);
+        entityLocation.remove(entity);
     }
 
     private record SearchBoundaries(int x, int y, int minX, int maxX, int minY, int maxY) {}
@@ -135,7 +141,7 @@ public final class WorldMap {
 
     public Optional<Entity> getClosestEntity(Creature creature) {
         Cell creatureCell = findCellOfEntity(creature);
-        if (creatureCell == null) {return Optional.empty();}
+        if (creatureCell == null) { return Optional.empty(); }
         SearchBoundaries b = getSquareBoundaries(creatureCell, creature.getVision());
 
         Entity closest = null;
@@ -143,7 +149,7 @@ public final class WorldMap {
 
         for (int i = b.minX(); i <= b.maxX(); i++) {
             for (int j = b.minY(); j <= b.maxY(); j++) {
-                Cell current = new Cell(i, j);
+                Cell current = cellOf(i, j).orElseThrow(() -> new IllegalArgumentException("Cell does not exist"));
                 if (current.equals(creatureCell)) continue;
 
                 Optional<Entity> candidate = findEntitiesCreatureCanEat(current, creature);

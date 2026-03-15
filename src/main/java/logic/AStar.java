@@ -6,7 +6,6 @@ import graph.Graph;
 import pathfinding.CoordinateMap;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AStar implements Pathfinder{
     private pathfinding.AStar algorithm;
@@ -44,7 +43,7 @@ public class AStar implements Pathfinder{
         return algorithm.findPath(from, to)
                 .stream()
                 .map(reverseIndex::get)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private void updateGraphWeights() {
@@ -97,12 +96,13 @@ public class AStar implements Pathfinder{
                 int ny = cell.y() + dir[1];
 
                 if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-                    Cell neighborKey = new Cell(nx, ny);
-                    Graph.Node neighbor = nodeIndex.get(neighborKey);
-                    if (neighbor != null && !graph.checkAdjacency(current, neighbor)) {
-                        graph.connectNodes(current, neighbor, 1);
-                        incomingIndex.computeIfAbsent(neighbor, k -> new ArrayList<>()).add(current);
-                    }
+                    worldMap.cellOf(nx, ny).ifPresent(neighborKey -> {
+                        Graph.Node neighbor = nodeIndex.get(neighborKey);
+                        if (neighbor != null && !graph.checkAdjacency(current, neighbor)) {
+                            graph.connectNodes(current, neighbor, 1);
+                            incomingIndex.computeIfAbsent(neighbor, k -> new ArrayList<>()).add(current);
+                        }
+                    });
                 }
             }
         }

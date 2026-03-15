@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+@SuppressWarnings("java:S2160")
 public abstract class Creature extends Entity {
     private final int moveSpeed;
     protected final Pathfinder algorithm;
@@ -58,8 +59,10 @@ public abstract class Creature extends Entity {
         Cell current = map.findCellOfEntity(this);
 
         List<Cell> passableNeighbors = Arrays.stream(DIRECTIONS)
-                .map(dir -> new Cell(current.x() + dir[0], current.y() + dir[1]))
-                .filter(map::isValidCell)    // within map bounds
+                .map(dir -> map.cellOf(current.x() + dir[0], current.y() + dir[1]))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .filter(map::isValidCell)
                 .filter(map::suggestMove)
                 .toList();
 
