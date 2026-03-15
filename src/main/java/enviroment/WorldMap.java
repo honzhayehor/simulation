@@ -71,12 +71,11 @@ public final class WorldMap {
         return entities.stream().allMatch(Entity::isPassable);
     }
 
-    public boolean moveEntity(Entity entity, Cell destination) {
-        if (!suggestMove(destination)) return false;
+    public void moveEntity(Entity entity, Cell destination) {
+        if (!suggestMove(destination)) return;
         Cell current = findCellOfEntity(entity);
         map.get(current).remove(entity);
         map.get(destination).add(entity);
-        return true;
     }
 
     public int getWidth() {return width;}
@@ -117,7 +116,7 @@ public final class WorldMap {
     }
 
     private double distanceTo(Cell from, Cell to) {
-        return Math.pow(from.x() - to.x(), 2) + Math.pow(from.y() - to.y(), 2);
+        return Math.pow((double) from.x() - to.x(), 2) + Math.pow((double) from.y() - to.y(), 2);
     }
 
     private Optional<Entity> findEntitiesCreatureCanEat(Cell cell, Creature creature) {
@@ -136,6 +135,7 @@ public final class WorldMap {
 
     public Optional<Entity> getClosestEntity(Creature creature) {
         Cell creatureCell = findCellOfEntity(creature);
+        if (creatureCell == null) {return Optional.empty();}
         SearchBoundaries b = getSquareBoundaries(creatureCell, creature.getVision());
 
         Entity closest = null;
