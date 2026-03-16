@@ -19,17 +19,20 @@ public abstract class Creature extends Entity {
     private static final Random RANDOM = new Random();
     protected final int vision;
     protected final int attackPower;
+    protected final int starvationRate;
 
-    protected Creature(WorldMap map, Pathfinder algorithm, SightRange range, BaseHp baseHp, CreatureMoveSpeed creatureMoveSpeed, CreatureAttackPower attackPower) {
+    protected Creature(WorldMap map, Pathfinder algorithm, SightRange range, BaseHp baseHp, CreatureMoveSpeed creatureMoveSpeed, CreatureAttackPower attackPower, StarvationRate starvationRate) {
         super(baseHp, map);
         this.algorithm = algorithm;
         this.vision = range.getVisionRange();
         this.moveSpeed = creatureMoveSpeed.getSpeed();
         this.attackPower = attackPower.getAttackPower();
+        this.starvationRate = starvationRate.getRate();
     }
 
     public void makeMove() {
         if (!isAlive()) return;
+        reduceHp(starvationRate); // Starvation
         for (int i = 0; i < moveSpeed; i++) {
             performSingleStep();
         }

@@ -7,8 +7,15 @@ import units.configs.Energy;
 import units.interfaces.PlantBased;
 
 public class Grass extends Entity implements PlantBased {
-    protected Grass(BaseHp baseHp, WorldMap worldMap) {
+    protected Grass(WorldMap worldMap, BaseHp baseHp) {
         super(baseHp, worldMap);
+    }
+
+    public Grass create(WorldMap map) {
+        return new Grass(
+                map,
+                BaseHp.GRASS
+        );
     }
 
     @Override

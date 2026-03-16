@@ -1,7 +1,8 @@
 package units.configs;
 
 public enum Energy {
-    GRASS(10);
+    GRASS(10),
+    ZEBRA(40);
 
     private final int points;
     Energy(int points) {

@@ -1,7 +1,8 @@
 package units.configs;
 
 public enum CreatureAttackPower {
-    ZEBRA(1);
+    ZEBRA(1),
+    WOLF(50);
 
     private final int attackPower;
 
