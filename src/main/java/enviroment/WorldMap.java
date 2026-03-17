@@ -35,7 +35,7 @@ public final class WorldMap {
         return wm;
     }
 
-    public Cell registerCell(int x, int y) {
+    private Cell registerCell(int x, int y) {
         Cell cell = new Cell(x, y);
         cells.put(x + "," + y, cell);
         return cell;

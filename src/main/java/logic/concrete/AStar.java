@@ -1,13 +1,14 @@
-package logic;
+package logic.concrete;
 
 import enviroment.Cell;
 import enviroment.WorldMap;
 import graph.Graph;
+import logic.interfaces.Pathfinder;
 import pathfinding.CoordinateMap;
 
 import java.util.*;
 
-public class AStar implements Pathfinder{
+public class AStar implements Pathfinder {
     private pathfinding.AStar algorithm;
     private final WorldMap worldMap;
     private final Map<Cell, Graph.Node> nodeIndex = new HashMap<>();

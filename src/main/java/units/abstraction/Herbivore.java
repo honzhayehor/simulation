@@ -1,7 +1,7 @@
 package units.abstraction;
 
 import enviroment.WorldMap;
-import logic.AStar;
+import logic.concrete.AStar;
 import units.configs.*;
 import units.interfaces.MeatBased;
 

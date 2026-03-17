@@ -9,6 +9,10 @@ public class Rock extends Entity {
         super(baseHp, worldMap);
     }
 
+    public static Rock create(WorldMap worldMap) {
+        return new Rock(BaseHp.ROCK, worldMap);
+    }
+
     @Override
     public boolean isPassable() {
         return false;

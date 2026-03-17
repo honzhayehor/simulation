@@ -1,7 +1,7 @@
 package units.concrete;
 
 import enviroment.WorldMap;
-import logic.Pathfinder;
+import logic.interfaces.Pathfinder;
 import units.abstraction.Creature;
 import units.configs.*;
 import units.interfaces.MeatBased;

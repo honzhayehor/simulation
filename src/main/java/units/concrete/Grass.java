@@ -11,7 +11,7 @@ public class Grass extends Entity implements PlantBased {
         super(baseHp, worldMap);
     }
 
-    public Grass create(WorldMap map) {
+    public static Grass create(WorldMap map) {
         return new Grass(
                 map,
                 BaseHp.GRASS

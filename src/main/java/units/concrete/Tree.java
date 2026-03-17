@@ -10,6 +10,10 @@ public class Tree extends Entity {
         super(baseHp, worldMap);
     }
 
+    public static Tree create(WorldMap worldMap) {
+        return new Tree(BaseHp.TREE, worldMap);
+    }
+
     @Override
     public String getRepresentation() {
         return "🌳";

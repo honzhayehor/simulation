@@ -1,11 +1,9 @@
 package units.concrete;
 
 import enviroment.WorldMap;
-import logic.Pathfinder;
+import logic.interfaces.Pathfinder;
 import units.abstraction.Creature;
 import units.configs.*;
-
-import java.security.AlgorithmConstraints;
 
 public class Wolf extends Creature {
     protected Wolf(

@@ -1,4 +1,4 @@
-package logic;
+package logic.interfaces;
 
 import enviroment.Cell;
 import java.util.List;

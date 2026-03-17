@@ -2,7 +2,7 @@ package units.abstraction;
 
 import enviroment.Cell;
 import enviroment.WorldMap;
-import logic.Pathfinder;
+import logic.interfaces.Pathfinder;
 import units.configs.*;
 import units.interfaces.Edible;
 
