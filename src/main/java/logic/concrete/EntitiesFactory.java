@@ -1,5 +1,6 @@
-package enviroment;
+package logic.concrete;
 
+import enviroment.WorldMap;
 import logic.config.CreationConfig;
 import logic.interfaces.Pathfinder;
 import units.abstraction.Entity;

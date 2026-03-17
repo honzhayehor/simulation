@@ -1,14 +1,11 @@
 package logic.concrete;
 
 import enviroment.Cell;
-import enviroment.EntitiesFactory;
-import enviroment.RandomCoordinatesGenerator;
 import enviroment.WorldMap;
 import logic.interfaces.Pathfinder;
 import logic.config.CreationConfig;
 import rendering.Renderer;
 import units.abstraction.Entity;
-import units.concrete.*;
 
 import java.util.*;
 
