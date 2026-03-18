@@ -35,6 +35,10 @@ public final class WorldMap {
         return wm;
     }
 
+    public List<Entity> getAllEntites() {
+        return map.values().stream().flatMap(Set::stream).toList();
+    }
+
     private Cell registerCell(int x, int y) {
         Cell cell = new Cell(x, y);
         cells.put(x + "," + y, cell);

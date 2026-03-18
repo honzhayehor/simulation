@@ -19,6 +19,11 @@ public class Rock extends Entity {
     }
 
     @Override
+    public void makeMove() {
+        // Method is not implemented, because this entity should not be moved
+    }
+
+    @Override
     public String getRepresentation() {
         return "🪨";
     }

@@ -23,4 +23,9 @@ public class Tree extends Entity {
     public boolean isPassable() {
         return false;
     }
+
+    @Override
+    public void makeMove() {
+        // Method is not implemented, because this entity should not be moved
+    }
 }

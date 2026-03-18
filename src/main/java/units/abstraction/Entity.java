@@ -47,6 +47,7 @@ public abstract class Entity {
         return false;
     }
 
+    public abstract void makeMove();
 
     protected void die() {
         Cell current = map.findCellOfEntity(this);

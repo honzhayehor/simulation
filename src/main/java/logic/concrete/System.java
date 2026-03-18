@@ -16,6 +16,7 @@ public class System {
     private final Pathfinder pathfinder;
     private final List<Entity> entities;
     private final int moveCountEnd;
+    private boolean canStart = false;
 
     public System(WorldMap worldMap, Renderer renderer, Pathfinder pathfinder, int moveCountEnd) {
         this.worldMap = worldMap;
@@ -23,6 +24,25 @@ public class System {
         this.pathfinder = pathfinder;
         this.entities = new ArrayList<>();
         this.moveCountEnd = moveCountEnd;
+    }
+
+    public void start() {
+        if (canStart) {
+            updateGameStateForEachEntity();
+        } else throw new UnsupportedOperationException("Cannot start game without initialized map. Please, provide instructions to this object");
+    }
+
+    private void updateGameStateForEachEntity() {
+        for (int i = 0; i<moveCountEnd; i++ ) {
+            List<Entity> entitiesOnMap = worldMap.getAllEntites();
+            entitiesOnMap.forEach(Entity::makeMove);
+            renderer.render(worldMap);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void generateEntities(List<CreationConfig> instruction) {
@@ -38,6 +58,7 @@ public class System {
             entities.add(entity);
         }
         addEntitiesToWorldMap();
+        canStart = true;
     }
 
     private void addEntitiesToWorldMap() {

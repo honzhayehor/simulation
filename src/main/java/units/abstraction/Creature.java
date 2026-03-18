@@ -30,6 +30,7 @@ public abstract class Creature extends Entity {
         this.starvationRate = starvationRate.getRate();
     }
 
+    @Override
     public void makeMove() {
         if (!isAlive()) return;
         reduceHp(starvationRate); // Starvation

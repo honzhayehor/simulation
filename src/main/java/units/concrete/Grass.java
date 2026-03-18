@@ -31,4 +31,9 @@ public class Grass extends Entity implements PlantBased {
     public boolean isPassable() {
         return true;
     }
+
+    @Override
+    public void makeMove() {
+        // Method is not implemented, because this entity should not be moved
+    }
 }
