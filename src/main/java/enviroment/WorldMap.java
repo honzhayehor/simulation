@@ -2,6 +2,7 @@ package enviroment;
 
 import units.abstraction.Creature;
 import units.abstraction.Entity;
+import units.concrete.Grass;
 
 import java.util.*;
 
@@ -16,6 +17,10 @@ public final class WorldMap {
         this.width = width;
         this.height = height;
         map = initMap(width, height);
+    }
+
+    public Map<Cell, Set<Entity>> getMap() {
+        return Collections.unmodifiableMap(map);
     }
 
     public WorldMap() {
