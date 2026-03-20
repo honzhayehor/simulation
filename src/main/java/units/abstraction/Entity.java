@@ -2,6 +2,8 @@ package units.abstraction;
 
 import enviroment.Cell;
 import enviroment.WorldMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import units.configs.BaseHp;
 
 import java.util.Objects;
@@ -13,12 +15,18 @@ public abstract class Entity {
     protected int hp;
     protected final int maxHp;
     protected static AtomicInteger globalIdCounter = new AtomicInteger(0);
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+
 
     protected Entity(BaseHp baseHp, WorldMap worldMap) {
         this.maxHp = baseHp.getHp();
         this.hp = baseHp.getHp();
         map = worldMap;
         id = globalIdCounter.incrementAndGet();
+        log.info("Created entity: class={}, id={}, hp={}",
+                getClass().getSimpleName(),
+                id,
+                hp);
     }
 
     public abstract String getRepresentation();

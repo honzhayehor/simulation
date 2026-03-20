@@ -32,8 +32,15 @@ public abstract class Creature extends Entity {
 
     @Override
     public void makeMove() {
-        if (!isAlive()) return;
-        reduceHp(starvationRate); // Starvation
+        if (!isAlive()) {
+            log.info("Death of entity: class={}, id={}, hp={}",
+                    getClass().getSimpleName(),
+                    id,
+                    hp);
+            return;
+        }
+        reduceHp(starvationRate);
+        log.info("Creature has been starving. Current hp: {}", hp);
         for (int i = 0; i < moveSpeed; i++) {
             performSingleStep();
         }
@@ -43,16 +50,22 @@ public abstract class Creature extends Entity {
         lookForFoodInVicinity().ifPresentOrElse(
                 food -> {
                     List<Cell> path = findPathToDestination(food);
-                    if (path.size() < 2) return;
+                    if (path.size() < 2) {
+                        log.info("Creature will not move: path size is less than 2");
+                        return;
+                    }
 
                     Cell nextStep = path.get(1);
+                    log.info("Creature's next step: x={}, y={}", nextStep.x(), nextStep.y());
 
                     if (isAdjacentToFood(path, food)) {
                         if (attack(attackPower, food)) {
                             eat((Edible) food);
+                            log.info("Creature ate the food");
                         }
                     } else {
                         moveToDestination(nextStep);
+                        log.info("Creature has moved to destination");
                     }
                 },
                 this::wander
@@ -60,6 +73,7 @@ public abstract class Creature extends Entity {
     }
 
     private void wander() {
+        log.info("Creature is wandering");
         Cell current = map.findCellOfEntity(this);
 
         List<Cell> passableNeighbors = Arrays.stream(DIRECTIONS)

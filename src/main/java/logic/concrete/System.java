@@ -38,7 +38,7 @@ public class System {
             entitiesOnMap.forEach(Entity::makeMove);
             renderer.render(worldMap);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -66,7 +66,8 @@ public class System {
         int maxY = worldMap.getHeight() - 1;
         RandomCoordinatesGenerator rcg = new RandomCoordinatesGenerator(0, maxX, 0, maxY);
         for (Entity entity : entities) {
-            Cell cell = worldMap.cellOf(rcg.nextX(), rcg.nextY())
+            RandomCoordinatesGenerator.Coordinates coordinates = rcg.next();
+            Cell cell = worldMap.cellOf(coordinates.x(), coordinates.y())
                     .orElseThrow(() -> new IllegalArgumentException("Cell with these coordinates does not exist"));
             worldMap.addEntityToCell(cell, entity);
         }

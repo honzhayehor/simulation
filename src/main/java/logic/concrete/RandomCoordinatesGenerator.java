@@ -23,13 +23,12 @@ public class RandomCoordinatesGenerator {
         return list;
     }
 
-    public int nextX() {
-        if (xIndex >= xValues.size()) throw new UnsupportedOperationException("No more X values");
-        return xValues.get(xIndex++);
-    }
+    public record Coordinates(int x, int y) {}
 
-    public int nextY() {
-        if (yIndex >= yValues.size()) throw new UnsupportedOperationException("No more Y values");
-        return yValues.get(yIndex++);
+    public Coordinates next() {
+        if (xIndex >= xValues.size() || yIndex >= yValues.size()) {
+            throw new UnsupportedOperationException("No more coordinates");
+        }
+        return new Coordinates(xValues.get(xIndex++), yValues.get(yIndex++));
     }
 }
