@@ -6,7 +6,7 @@ import units.configs.BaseHp;
 
 public class Tree extends Entity {
 
-    protected Tree(BaseHp baseHp, WorldMap worldMap) {
+    private Tree(BaseHp baseHp, WorldMap worldMap) {
         super(baseHp, worldMap);
     }
 

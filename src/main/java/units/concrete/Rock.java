@@ -5,7 +5,7 @@ import units.abstraction.Entity;
 import units.configs.BaseHp;
 
 public class Rock extends Entity {
-    protected Rock(BaseHp baseHp, WorldMap worldMap) {
+    private Rock(BaseHp baseHp, WorldMap worldMap) {
         super(baseHp, worldMap);
     }
 

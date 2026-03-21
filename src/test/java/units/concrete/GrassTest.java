@@ -3,9 +3,12 @@ package units.concrete;
 import enviroment.WorldMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import units.abstraction.Entity;
 import units.configs.Energy;
+import units.interfaces.Edible;
 import units.interfaces.PlantBased;
 
 import java.lang.reflect.Field;
@@ -13,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 class GrassTest {
 
     private final WorldMap worldMap = Mockito.mock(WorldMap.class);
@@ -74,5 +78,10 @@ class GrassTest {
     void grassIsPlantBased() {
         Grass grass = Grass.create(worldMap);
         assertInstanceOf(PlantBased.class, grass);
+    }
+    @Test
+    void grassIsEdible() {
+        Grass grass = Grass.create(worldMap);
+        assertInstanceOf(Edible.class, grass);
     }
 }
