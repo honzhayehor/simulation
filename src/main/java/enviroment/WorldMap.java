@@ -2,7 +2,6 @@ package enviroment;
 
 import units.abstraction.Creature;
 import units.abstraction.Entity;
-import units.concrete.Grass;
 
 import java.util.*;
 
@@ -14,21 +13,22 @@ public final class WorldMap {
     private int height;
 
     public WorldMap(int width, int height) {
-        this.width = width;
-        this.height = height;
         map = initMap(width, height);
-    }
-
-    public Map<Cell, Set<Entity>> getMap() {
-        return Collections.unmodifiableMap(map);
     }
 
     public WorldMap() {
         map = initMap(10, 10);
     }
 
+    public Map<Cell, Set<Entity>> getMap() {
+        return Collections.unmodifiableMap(map);
+    }
+
+
     private Map<Cell, Set<Entity>> initMap(int xLength, int yLength) {
         Map<Cell, Set<Entity>> wm = new HashMap<>();
+        width = xLength;
+        height = yLength;
         if (xLength < 0 || yLength < 0) {
             throw new IllegalArgumentException("x or y cannot be null");
         }
@@ -40,7 +40,7 @@ public final class WorldMap {
         return wm;
     }
 
-    public List<Entity> getAllEntites() {
+    public List<Entity> getAllEntities() {
         return map.values().stream().flatMap(Set::stream).toList();
     }
 

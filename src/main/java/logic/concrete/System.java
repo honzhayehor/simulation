@@ -34,7 +34,7 @@ public class System {
 
     private void updateGameStateForEachEntity() {
         for (int i = 0; i<moveCountEnd; i++ ) {
-            List<Entity> entitiesOnMap = worldMap.getAllEntites();
+            List<Entity> entitiesOnMap = worldMap.getAllEntities();
             entitiesOnMap.forEach(Entity::makeMove);
             renderer.render(worldMap);
             try {
