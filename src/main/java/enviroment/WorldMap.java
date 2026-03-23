@@ -75,9 +75,6 @@ public final class WorldMap {
             throw new IllegalArgumentException("Cell and entity cannot be null");
         }
         Set<Entity> entities = map.get(cell);
-        if (entities == null) {
-            throw new IllegalArgumentException("Cell not found: " + cell);
-        }
         entities.add(entity);
         entityLocation.put(entity, cell);
     }
@@ -85,6 +82,9 @@ public final class WorldMap {
     public boolean suggestMove(Cell cell) {
         Set<Entity> entities = map.get(cell);
         if (entities == null) throw new IllegalArgumentException("Cell not found: " + cell);
+        if (entities.isEmpty()) {
+            return true;
+        }
         return entities.stream().allMatch(Entity::isPassable);
     }
 
