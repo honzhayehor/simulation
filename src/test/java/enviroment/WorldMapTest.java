@@ -217,4 +217,64 @@ class WorldMapTest {
         assertEquals(source, worldMap.findCellOfEntity(grass));
         assertTrue(worldMap.getMap().get(source).contains(grass));
     }
+
+    @Test
+    void givenNullEntityThrowsError() {
+        Grass grass = null;
+        Cell cell = worldMap.cellOf(1,1).get();
+        assertThrows(NullPointerException.class, () -> worldMap.removeEntity(grass, cell));
+    }
+
+    @Test
+    void givenNullCellThrowsError() {
+        Grass grass = Mockito.mock(Grass.class);
+        Cell cell = null;
+        assertThrows(NullPointerException.class, () -> worldMap.removeEntity(grass, cell));
+    }
+
+    @Test
+    void throwsErrorWhenEntityIsNotInCellAndTryToRemove() {
+        Grass grass = Grass.create(worldMap);
+        Cell cell = worldMap.cellOf(1,1).get();
+        assertThrows(IllegalArgumentException.class, () -> worldMap.removeEntity(grass, cell));
+    }
+
+    @Test
+    void successfullyRemoveEntity() {
+        Grass grass = Grass.create(worldMap);
+        Cell cell = worldMap.cellOf(1,1).get();
+        worldMap.addEntityToCell(cell, grass);
+        assertDoesNotThrow(() -> worldMap.removeEntity(grass, cell));
+    }
+
+    @Test
+    void givenBadCellReturnsFalse() {
+        worldMap = new WorldMap(10, 10);
+        Cell cell = new Cell(14, 14);
+        assertFalse(worldMap.isValidCell(cell));
+    }
+
+    @Test
+    void givenGoodCellReturnsTrue() {
+        worldMap = new WorldMap(10, 10);
+        Cell cell = new Cell(2, 1);
+        assertTrue(worldMap.isValidCell(cell));
+    }
+
+    @Test
+    void returnsUnmodifiableListOfCells() {
+        List<Cell> cells = worldMap.asList();
+        assertThrows(UnsupportedOperationException.class, () -> cells.remove(1));
+    }
+
+    @Test
+    void returnsCorrectCountOfCells() {
+        int width = 5;
+        int height = 5;
+        int expected = width * height;
+        worldMap = new WorldMap(width, height);
+        List<Cell> cells = worldMap.asList();
+        int real = cells.size();
+        assertEquals(expected, real);
+    }
 }

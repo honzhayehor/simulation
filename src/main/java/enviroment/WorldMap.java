@@ -109,10 +109,9 @@ public final class WorldMap {
         Objects.requireNonNull(cell, "Cell cannot be null");
 
         Set<Entity> entities = map.get(cell);
-        if (entities == null) throw new IllegalArgumentException("Cell not found: " + cell);
 
         boolean removed = entities.remove(entity);
-        if (!removed) throw new IllegalStateException("Entity not found in cell: " + cell);
+        if (!removed) throw new IllegalArgumentException("Entity not found in cell: " + cell);
         entityLocation.remove(entity);
     }
 
@@ -175,6 +174,6 @@ public final class WorldMap {
     }
 
     public List<Cell> asList() {
-        return new ArrayList<>(map.keySet());
+        return List.copyOf(map.keySet());
     }
 }
