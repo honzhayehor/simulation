@@ -1,5 +1,6 @@
 package enviroment;
 
+import logic.interfaces.Pathfinder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,11 +10,10 @@ import units.abstraction.Creature;
 import units.abstraction.Entity;
 import units.concrete.Grass;
 import units.concrete.Rock;
+import units.concrete.Zebra;
+import units.interfaces.PlantBased;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -277,4 +277,48 @@ class WorldMapTest {
         int real = cells.size();
         assertEquals(expected, real);
     }
+
+    @Test
+    void returnsCorrectFoodEntity() {
+        Zebra zebra = Zebra.create(worldMap, Mockito.mock(Pathfinder.class));
+        Grass grass = Grass.create(worldMap);
+        worldMap.addEntityToCell(worldMap.cellOf(1, 1).get(), zebra);
+        worldMap.addEntityToCell(worldMap.cellOf(2, 2).get(), grass);
+
+        Entity entity = worldMap.getClosestEntity(zebra).get();
+        assertInstanceOf(PlantBased.class, entity);
+    }
+
+    @Test
+    void returnsEmptyOptionalWhenFoodOutOfSight() {
+        Zebra zebra = Zebra.create(worldMap, Mockito.mock(Pathfinder.class));
+        Grass grass = Grass.create(worldMap);
+        worldMap.addEntityToCell(worldMap.cellOf(1, 1).get(), zebra);
+        worldMap.addEntityToCell(worldMap.cellOf(9, 9).orElseThrow(() -> new IllegalArgumentException("Cell does not exist")), grass);
+
+        assertTrue(worldMap.getClosestEntity(zebra).isEmpty());
+    }
+
+    @Test
+    void givenNullReturnsEmptyOptional() {
+        Optional<Entity> entity = worldMap.getClosestEntity(null);
+        assertTrue(entity.isEmpty());
+    }
+
+    @Test
+    void returnsClosestFoodEntityWhenMultipleExist() {
+        Zebra zebra = Zebra.create(worldMap, Mockito.mock(Pathfinder.class));
+        Grass nearGrass = Grass.create(worldMap);
+        Grass farGrass = Grass.create(worldMap);
+
+        worldMap.addEntityToCell(worldMap.cellOf(1, 1).get(), zebra);
+        worldMap.addEntityToCell(worldMap.cellOf(1, 2).get(), nearGrass);
+        worldMap.addEntityToCell(worldMap.cellOf(5, 5).get(), farGrass);
+
+        Entity result = worldMap.getClosestEntity(zebra).get();
+        assertEquals(nearGrass, result);
+    }
+
+
+
 }
