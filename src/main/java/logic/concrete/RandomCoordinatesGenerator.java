@@ -19,7 +19,7 @@ public class RandomCoordinatesGenerator {
     private List<Integer> generateShuffled(int min, int max) {
         List<Integer> list = new ArrayList<>();
         for (int i = min; i <= max; i++) list.add(i);
-        Collections.shuffle(list, new Random(42));
+        Collections.shuffle(list, new Random());
         return list;
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        WorldMap worldMap = new WorldMap(15, 15);
+        WorldMap worldMap = new WorldMap(14, 14);
         Pathfinder pathfinder = new AStar(worldMap);
         List<CreationConfig> instructions = List.of(
                 CreationConfig.TREE,
