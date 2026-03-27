@@ -6,12 +6,16 @@ import logic.interfaces.Pathfinder;
 import units.abstraction.Entity;
 import units.concrete.*;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class EntitiesFactory {
     private EntitiesFactory() {}
 
     public static Optional<Entity> getEntity(CreationConfig config, WorldMap worldMap, Pathfinder pathfinder) {
+        if ((config == null) || (worldMap == null) || (pathfinder == null)) {
+            throw new IllegalArgumentException("Cannot invoke method with null reference");
+        }
         return switch (config) {
             case ZEBRA -> Optional.of(Zebra.create(worldMap, pathfinder));
             case GRASS -> Optional.of(Grass.create(worldMap));

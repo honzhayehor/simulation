@@ -19,7 +19,7 @@ public class AStar implements Pathfinder {
     private static final int DEFAULT_WEIGHT = 1;
 
     public AStar(WorldMap map) {
-        worldMap = map;
+        worldMap = Objects.requireNonNull(map);
         CoordinateMap coordinateMap = new CoordinateMap();
         createGraphFromCellsAndPopulateCoordinateMap(graph, worldMap, coordinateMap, worldMap.asList());
         setAlgorithm(graph, coordinateMap);
