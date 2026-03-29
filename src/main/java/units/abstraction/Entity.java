@@ -35,6 +35,13 @@ public abstract class Entity {
         return id;
     }
 
+    public int getHp() {
+        return hp;
+    }
+    public int getMaxHp() {
+        return maxHp;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Entity entity)) return false;
